@@ -1,181 +1,210 @@
-# Projeto: kraken
+# 🐙 Kraken - Gerador de Documentação e PRDs
 
-Tipo: Go
-Versão: 1.25.7
+**Ferramenta automatizada para análise de projetos e geração de documentação técnica e PRDs**
 
-## Descrição
+[![Go Version](https://img.shields.io/badge/Go-1.25+-blue.svg)](https://golang.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Ferramenta para análise de projetos Go que gera documentação de endpoints e PRDs (Product Requirements Documents) de forma automatizada.
+## 📋 Descrição
 
-## Funcionalidades
+O Kraken é uma ferramenta poderosa que analisa projetos de software e gera automaticamente:
 
-### 📝 Geração de Documentação de Endpoints
+- 📝 **Documentação técnica de APIs** com detalhes completos
+- 📋 **PRDs (Product Requirements Documents)** estruturados
+- 🤖 **Conteúdo otimizado para desenvolvedores júnior**
+- 🔍 **Detecção automática** de tipo de projeto
+- 🧠 **Integração com múltiplas IAs** (OpenAI, Anthropic, Ollama, Gemini)
+- 💻 **Compatibilidade com IDEs** (Windsurf, Cursor, VS Code, IntelliJ)
 
-- Detecta automaticamente o tipo de projeto (Go, Node.js, Java/Maven)
-- Analisa os endpoints da API
-- Gera documentação separada por rota no diretório `docs/kraken/`
+## ✨ Funcionalidades
 
-### 📋 Criação de PRDs (Product Requirements Documents)
+### 🎯 **Geração Unificada de Documentos**
 
-- Interface interativa para criação de PRDs completos
-- Segue as melhores práticas do cursor-prd-task-rules
-- Gera PRDs estruturados no diretório `tasks/`
+- **Comando único** gera ambos: documentação de endpoints E PRD
+- **Conteúdo otimizado** para desenvolvedores júnior (explícito, detalhado, sem jargões)
+- **Saída unificada** em `docs/kraken/`
 
-## Como Usar
+### 📝 **Documentação de Endpoints**
 
-### Build e Execução
+- Detecta automaticamente projetos (Go, Node.js, Java/Maven)
+- Analisa endpoints e gera documentação completa
+- Inclui exemplos, códigos de status, tratamento de erros
+- Formato Markdown organizado
 
-#### Opção 1: Script de Instalação (Mais fácil)
+### 📋 **PRDs Inteligentes**
+
+- Gerados por IA com base no contexto do projeto
+- Estrutura completa: histórias de usuário, requisitos, métricas
+- Foco em desenvolvedores júnior
+- Formato JSON estruturado
+
+### 🤖 **Integração com IA**
+
+- **IA Externa**: OpenAI, Anthropic, Ollama, Gemini
+- **IA da IDE**: Windsurf, Cursor, VS Code, IntelliJ
+- **Prompts otimizados** para desenvolvedores júnior
+- **Configuração flexível** de provedores
+
+## 🚀 Como Usar
+
+### Instalação e Build
 
 ```bash
-# Instalar com permissões automáticas
-./install.sh
+# Clonar repositório
+git clone https://github.com/gabimarsola/kraken.git
+cd kraken
+
+# Build (recomendado)
+make build
+
+# Ou build manual
+go build -o kraken . && chmod +x kraken
 ```
 
-#### Opção 2: Usando Make (Recomendado)
+### Execução
 
 ```bash
-# Build com permissões corretas
+# Executar o Kraken
+./kraken
+```
+
+### � **Menu Principal**
+
+```
+🚀 Kraken - Menu Principal
+========================
+1. Gerar documentos com IA externa
+2. Gerar documentos com IA da IDE
+3. Configurar provedor de IA
+4. Sair
+```
+
+### 🎯 **Fluxo de Uso**
+
+1. **Execute o Kraken**: `./kraken`
+2. **Escolha a opção 1 ou 2** para gerar documentos
+3. **Aguarde o processamento** (análise + geração)
+4. **Encontre os resultados** em `docs/kraken/`
+
+## 📁 **Estrutura de Saída**
+
+```
+docs/kraken/
+├── API-DOC.md                    # Documentação de endpoints
+├── prd-[nome-projeto].md         # PRD gerado
+└── [outros-arquivos].md          # Documentos adicionais
+```
+
+## ⚙️ **Configuração de IA**
+
+### Configurar Provedor Externo
+
+```bash
+# Opção 3 no menu principal
+# Siga o assistente para configurar:
+# - OpenAI (API Key)
+# - Anthropic (API Key)
+# - Ollama (local)
+# - Gemini (API Key)
+```
+
+### Usar IA da IDE
+
+- **Windsurf**: Detectado automaticamente via `.windsurf/`
+- **Cursor**: Detectado automaticamente via `.cursor/`
+- **VS Code**: Detectado automaticamente via `.vscode/`
+- **IntelliJ**: Detectado automaticamente via `.idea/`
+
+## 🛠️ **Comandos Úteis**
+
+```bash
+# Build
 make build
 
 # Executar
 make run
-# ou
-./kraken
+
+# Limpar
+make clean
+
+# Instalar no sistema
+make install
 ```
 
-#### Opção 3: Build Manual
+## 📊 **Tipos de Projeto Suportados**
+
+| Tipo        | Arquivo de Configuração | Exemplos                 |
+| ----------- | ----------------------- | ------------------------ |
+| **Go**      | `go.mod`                | Gin, Echo, Fiber         |
+| **Node.js** | `package.json`          | Express, NestJS, Fastify |
+| **Java**    | `pom.xml`               | Spring Boot, JAX-RS      |
+
+## 🎯 **Exemplo de Uso Completo**
 
 ```bash
-# Build
-go build -o kraken .
+# 1. Build
+make build
 
-# Dar permissão de execução (importante!)
-chmod +x kraken
-
-# Executar
+# 2. Executar
 ./kraken
+
+# 3. Escolher opção 1 (IA externa) ou 2 (IA da IDE)
+
+# 4. Resultados em docs/kraken/
+ls docs/kraken/
+# API-DOC.md
+# prd-meu-projeto.md
 ```
 
-### 🔧 Solução de Problemas de Permissão
+## 🔧 **Solução de Problemas**
 
-Se o arquivo `kraken` não tiver permissão de execução:
+### Permissão Negada
 
 ```bash
-# Corrigir permissões
 chmod +x kraken
-
-# Verificar permissões
-ls -la kraken
-# Deve mostrar: -rwxrwx-x (ou similar com 'x' para executável)
 ```
 
-**Dica:** Use sempre `make build` para garantir permissões corretas automaticamente.
+### IDE Não Detectada
 
-### Menu de Opções
-
-1. **Gerar documentação de endpoints** - Analisa o projeto e cria documentação completa da API
-2. **Criar PRD** - Inicia o processo interativo de criação de PRD
-3. **Sair** - Encerra o programa
-
-### Estrutura de Arquivos Gerados
-
-#### Documentação de Endpoints
-
-```
-docs/kraken/
-├── NOME-ROTA-DOC.md
-└── ...
+```bash
+# Verifique se o diretório de configuração existe:
+# .windsurf/ ou .cursor/ ou .vscode/ ou .idea/
 ```
 
-#### PRDs
+### Configuração de IA
 
+```bash
+# Configure um provedor via menu (opção 3)
+# Ou crie ai_config.json baseado em ai_config.example.json
 ```
-tasks/
-├── prd-nome-da-funcionalidade.md
-└── ...
-```
 
-## Estrutura de um PRD Gerado
+## 📚 **Documentação Adicional**
 
-Os PRDs gerados seguem a estrutura padrão:
+- [Integração com IDEs](IDE_INTEGRATION.md)
+- [Configuração de IA](AI_INTEGRATION.md)
+- [Integração Git](GIT_INTEGRATION.md)
+- [Padrões de Extração](EXTRACTION_PATTERNS.md)
 
-- **Introdução/Visão Geral**
-- **Objetivos**
-- **Histórias do Usuário** (com critérios de aceitação)
-- **Requisitos Funcionais** (com prioridades)
-- **Não-Objetivos** (fora do escopo)
-- **Considerações de Design**
-- **Considerações Técnicas**
-- **Métricas de Sucesso**
-- **Questões Abertas**
+## 🤝 **Contribuição**
 
-## Exemplo de Uso
+Contribuições são bem-vindas! Por favor:
 
-### Criar um PRD
+1. Fork o projeto
+2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
 
-1. Execute `./kraken`
-2. Escolha a opção 2 (Criar PRD)
-3. Siga o assistente interativo:
-   - Informe o título da funcionalidade
-   - Descreva a funcionalidade
-   - Adicione objetivos, histórias de usuário, requisitos, etc.
-4. O PRD será gerado em `tasks/prd-nome-da-funcionalidade.md`
+## 📄 **Licença**
 
-### Gerar Documentação
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-1. Execute `./kraken`
-2. Escolha a opção 1 (Gerar documentação)
-3. A documentação será criada em `docs/kraken/`
+## 🌟 **Créditos**
 
-## Requisitos
-
-- Go 1.25.7 ou superior
-- Projeto com um dos arquivos de configuração reconhecidos:
-  - `go.mod` (projetos Go)
-  - `package.json` (projetos Node.js)
-  - `pom.xml` (projetos Java/Maven)
-
-## API Endpoints
-
-### GET /api/hello
-
-**Descrição:** Retorna uma mensagem de saudação personalizada
-
-#### Cenários de Sucesso
-
-- **200**: Mensagem de saudação retornada com sucesso
-
-#### Cenários de Erro
-
-- **400**: Parâmetro 'name' não fornecido ou vazio
-
-- **500**: Erro interno ao processar a requisição
+- Desenvolvido para automatizar documentação técnica
+- Otimizado para times de desenvolvimento
+- Foco em desenvolvedores júnior
 
 ---
 
-### GET /api/status
-
-**Descrição:** Retorna o status da API
-
-#### Cenários de Sucesso
-
-- **200**: Status da API retornado com sucesso
-
----
-
-### POST /api/echo
-
-**Descrição:** Retorna o texto enviado no corpo da requisição
-
-#### Cenários de Sucesso
-
-- **200**: Texto retornado com sucesso
-
-#### Cenários de Erro
-
-- **400**: Corpo da requisição vazio ou inválido
-
-- **413**: Texto muito grande (máximo 1000 caracteres)
-
----
+**🐙 Kraken - Transformando código em documentação clara!**
