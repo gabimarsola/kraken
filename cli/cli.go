@@ -7,7 +7,6 @@ import (
 	"kraken/src/ai"
 	"kraken/src/analyzer"
 	"kraken/src/detector"
-	"kraken/src/generator"
 	"kraken/src/parser"
 	"kraken/src/prd"
 	"kraken/src/structure"
@@ -150,39 +149,17 @@ func (cli *CLI) generateDocumentsWithIDEAI() error {
 	fmt.Printf("📊 Encontrados %d endpoints documentados\n", len(endpoints))
 	cli.info.Endpoints = endpoints
 
-	// Gerar documentação técnica
-	fmt.Println("📝 Gerando documentação técnica...")
-	generatedFiles, err := generator.GenerateAllRouteDocumentation(cli.info, cli.projectPath)
-	if err != nil {
-		return fmt.Errorf("erro ao gerar documentação: %v", err)
-	}
+	// Gerar documentação completa contextualizada sem IA (fallback)
+	fmt.Println("📋 Gerando documentação completa contextualizada...")
+	contextualGen := prd.NewContextualPRDGenerator(cli.info)
 
-	// Gerar PRD com IA da IDE
-	fmt.Println("📋 Gerando PRD com IA da IDE...")
-	ideGenerator, err := prd.NewIDEPRDGenerator(cli.info)
-	if err != nil {
-		fmt.Printf("❌ Erro ao criar gerador IDE: %v\n", err)
-		if err.Error() == "IDE não detectada ou não suportada" {
-			fmt.Println("💡 Dicas para detectar a IDE:")
-			fmt.Println("   - Windsurf: Verifique se o diretório .windsurf existe")
-			fmt.Println("   - Cursor: Verifique se o diretório .cursor existe")
-			fmt.Println("   - VS Code: Verifique se o diretório .vscode existe")
-			fmt.Println("   - IntelliJ: Verifique se o diretório .idea existe")
-		}
-		return err
-	}
+	// Não usar IA para garantir que funcione com o novo template
+	contextualGen.SetAIProvider("", map[string]string{})
 
-	err = ideGenerator.GeneratePRDWithIDE()
+	err = contextualGen.GenerateCompleteDocumentation()
 	if err != nil {
-		return fmt.Errorf("erro ao gerar PRD com IA da IDE: %v", err)
+		return fmt.Errorf("erro ao gerar documentação completa: %v", err)
 	}
-
-	fmt.Printf("✅ Documentos gerados com sucesso!\n")
-	fmt.Printf("📄 %d arquivos de documentação criados:\n", len(generatedFiles))
-	for _, file := range generatedFiles {
-		fmt.Printf("   - %s\n", file)
-	}
-	fmt.Printf("📄 PRD criado em docs/kraken/\n")
 
 	return nil
 }

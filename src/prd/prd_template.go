@@ -55,7 +55,7 @@ func (t *PRDTemplate) generateAIPRD(context *ProjectContext, gitContext *GitCont
 func (t *PRDTemplate) buildAIPrompt(context *ProjectContext, gitContext *GitContext) string {
 	var prompt strings.Builder
 
-	prompt.WriteString(fmt.Sprintf("Como Product Manager sênior, crie uma PRD profissional no formato de engenharia de software para o ticket %s.\n\n", t.TicketID))
+	prompt.WriteString(fmt.Sprintf("Como Product Manager sênior, crie uma PRD profissional em PORTUGUÊS BRASILEIRO no formato de engenharia de software para o ticket %s.\n\n", t.TicketID))
 
 	prompt.WriteString("## CONTEXTO DO PROJETO\n\n")
 	prompt.WriteString(fmt.Sprintf("**Projeto:** %s\n", context.ProjectName))
@@ -65,7 +65,14 @@ func (t *PRDTemplate) buildAIPrompt(context *ProjectContext, gitContext *GitCont
 
 	prompt.WriteString("\n## CONTEXTO GIT\n\n")
 	prompt.WriteString(fmt.Sprintf("**Branch:** %s\n", gitContext.CurrentBranch))
-	prompt.WriteString(fmt.Sprintf("**Último Commit:** %s - %s\n", gitContext.LastCommit[:7], gitContext.LastCommitMsg))
+
+	if gitContext.LastCommit != "" {
+		shortCommit := gitContext.LastCommit
+		if len(shortCommit) > 7 {
+			shortCommit = shortCommit[:7]
+		}
+		prompt.WriteString(fmt.Sprintf("**Último Commit:** %s - %s\n", shortCommit, gitContext.LastCommitMsg))
+	}
 
 	if len(gitContext.Changes) > 0 {
 		prompt.WriteString("**Arquivos Alterados:**\n")
@@ -80,29 +87,26 @@ func (t *PRDTemplate) buildAIPrompt(context *ProjectContext, gitContext *GitCont
 	}
 
 	prompt.WriteString("\n## REQUISITOS DA PRD\n\n")
-	prompt.WriteString("Crie uma PRD profissional seguindo este formato:\n\n")
+	prompt.WriteString("Crie uma PRD profissional em PORTUGUÊS BRASILEIRO seguindo este formato:\n\n")
 
 	prompt.WriteString("1. **Header** com informações do ticket\n")
-	prompt.WriteString("2. **Overview** - resumo executivo\n")
-	prompt.WriteString("3. **Problem Statement** - problema a ser resolvido\n")
-	prompt.WriteString("4. **Goals & Objectives** - metas SMART\n")
-	prompt.WriteString("5. **User Stories** - histórias de usuário detalhadas\n")
-	prompt.WriteString("6. **Functional Requirements** - requisitos funcionais\n")
-	prompt.WriteString("7. **Non-Functional Requirements** - requisitos não funcionais\n")
-	prompt.WriteString("8. **Technical Considerations** - considerações técnicas\n")
-	prompt.WriteString("9. **Dependencies** - dependências externas\n")
-	prompt.WriteString("10. **Risks & Mitigations** - riscos e mitigações\n")
-	prompt.WriteString("11. **Success Metrics** - métricas de sucesso\n")
-	prompt.WriteString("12. **Out of Scope** - fora do escopo\n")
-	prompt.WriteString("13. **Timeline & Milestones** - cronograma\n")
-	prompt.WriteString("14. **Stakeholders** - stakeholders\n")
+	prompt.WriteString("2. **Visão Geral** - resumo executivo\n")
+	prompt.WriteString("3. **Declaração do Problema** - problema a ser resolvido\n")
+	prompt.WriteString("4. **Objetivos e Metas** - metas SMART\n")
+	prompt.WriteString("5. **Requisitos Funcionais** - requisitos funcionais\n")
+	prompt.WriteString("6. **Requisitos Não Funcionais** - requisitos não funcionais\n")
+	prompt.WriteString("7. **Considerações Técnicas** - considerações técnicas\n")
+	prompt.WriteString("8. **Dependências** - dependências externas\n")
+	prompt.WriteString("9. **Riscos e Mitigações** - riscos e mitigações\n")
 
 	prompt.WriteString("\n## IMPORTANTE\n\n")
-	prompt.WriteString("- Use linguagem profissional e técnica\n")
+	prompt.WriteString("- Use linguagem profissional e técnica em PORTUGUÊS BRASILEIRO\n")
 	prompt.WriteString("- Seja específico e mensurável\n")
 	prompt.WriteString("- Inclua exemplos práticos\n")
 	prompt.WriteString("- Considere o contexto atual do projeto\n")
 	prompt.WriteString("- Foque em desenvolvedores júnior como audiência\n")
+	prompt.WriteString("- NÃO inclua seções a partir de \"Success Metrics\" (métricas de sucesso)\n")
+	prompt.WriteString("- NÃO inclua: Histórias de Usuário, Fora do Escopo, Cronograma, Stakeholders, Contexto Git\n")
 
 	return prompt.String()
 }
@@ -111,139 +115,94 @@ func (t *PRDTemplate) generateBasicPRD(context *ProjectContext, gitContext *GitC
 	var prd strings.Builder
 
 	// Header
-	prd.WriteString(fmt.Sprintf("# %s - Product Requirements Document\n\n", t.TicketID))
-	prd.WriteString(fmt.Sprintf("**Project:** %s\n", t.ProjectName))
+	prd.WriteString(fmt.Sprintf("# %s - Documento de Requisitos do Produto\n\n", t.TicketID))
+	prd.WriteString(fmt.Sprintf("**Projeto:** %s\n", t.ProjectName))
 	prd.WriteString(fmt.Sprintf("**Status:** %s\n", t.Status))
-	prd.WriteString(fmt.Sprintf("**Priority:** %s\n", t.Priority))
-	prd.WriteString(fmt.Sprintf("**Created:** %s\n", t.CreatedDate.Format("2006-01-02")))
-	prd.WriteString(fmt.Sprintf("**Author:** Engineering Team\n\n"))
+	prd.WriteString(fmt.Sprintf("**Prioridade:** %s\n", t.Priority))
+	prd.WriteString(fmt.Sprintf("**Criado:** %s\n", t.CreatedDate.Format("02/01/2006")))
+	prd.WriteString(fmt.Sprintf("**Autor:** Equipe de Engenharia\n\n"))
 
-	// Overview
-	prd.WriteString("## Overview\n\n")
-	prd.WriteString(fmt.Sprintf("This document outlines the requirements for %s, a %s application built with %s. ",
+	// Visão Geral
+	prd.WriteString("## Visão Geral\n\n")
+	prd.WriteString(fmt.Sprintf("Este documento descreve os requisitos para %s, uma aplicação %s construída com %s. ",
 		context.ProjectName, context.ProjectType, strings.Join(context.Technologies, ", ")))
-	prd.WriteString("The solution addresses current business needs while maintaining technical excellence and scalability.\n\n")
+	prd.WriteString("A solução aborda necessidades atuais de negócio mantendo excelência técnica e escalabilidade.\n\n")
 
-	// Problem Statement
-	prd.WriteString("## Problem Statement\n\n")
-	prd.WriteString("The current system requires enhancements to improve developer experience, maintainability, and alignment with modern software engineering practices. This PRD addresses these challenges through structured improvements.\n\n")
+	// Declaração do Problema
+	prd.WriteString("## Declaração do Problema\n\n")
+	prd.WriteString("O sistema atual requer melhorias para aprimorar a experiência do desenvolvedor, manutenibilidade e alinhamento com práticas modernas de engenharia de software. Esta PRD aborda esses desafios através de melhorias estruturadas.\n\n")
 
-	// Goals & Objectives
-	prd.WriteString("## Goals & Objectives\n\n")
-	prd.WriteString("### Primary Goals\n")
-	prd.WriteString("1. **Enhance Developer Experience**: Improve documentation and onboarding for junior developers\n")
-	prd.WriteString("2. **Improve Maintainability**: Standardize code structure and documentation\n")
-	prd.WriteString("3. **Increase Efficiency**: Streamline development workflows\n\n")
+	// Objetivos e Metas
+	prd.WriteString("## Objetivos e Metas\n\n")
+	prd.WriteString("### Objetivos Principais\n")
+	prd.WriteString("1. **Aprimorar Experiência do Desenvolvedor**: Melhorar documentação e onboarding para desenvolvedores júnior\n")
+	prd.WriteString("2. **Melhorar Manutenibilidade**: Padronizar estrutura de código e documentação\n")
+	prd.WriteString("3. **Aumentar Eficiência**: Otimizar fluxos de trabalho de desenvolvimento\n\n")
 
-	prd.WriteString("### Success Criteria\n")
-	prd.WriteString("- Complete API documentation with examples\n")
-	prd.WriteString("- Comprehensive project documentation\n")
-	prd.WriteString("- Clear version tracking and change management\n\n")
+	prd.WriteString("### Critérios de Sucesso\n")
+	prd.WriteString("- Documentação completa de API com exemplos\n")
+	prd.WriteString("- Documentação abrangente do projeto\n")
+	prd.WriteString("- Rastreamento claro de versões e alterações\n\n")
 
-	// User Stories
-	prd.WriteString("## User Stories\n\n")
-	prd.WriteString("### US001 - As a Junior Developer\n")
-	prd.WriteString("**I want** to understand the project structure quickly **so that** I can contribute effectively.\n\n")
-	prd.WriteString("**Acceptance Criteria:**\n")
-	prd.WriteString("- [ ] Complete API documentation is available\n")
-	prd.WriteString("- [ ] Project setup instructions are clear\n")
-	prd.WriteString("- [ ] Code examples are provided\n\n")
+	// Requisitos Funcionais
+	prd.WriteString("## Requisitos Funcionais\n\n")
+	prd.WriteString("### RF001 - Documentação de API\n")
+	prd.WriteString("**Descrição:** Documentação completa de todos os endpoints da API\n")
+	prd.WriteString("**Prioridade:** Alta\n")
+	prd.WriteString("**Critérios de Aceite:**\n")
+	prd.WriteString("- Todos os endpoints documentados com exemplos\n")
+	prd.WriteString("- Formatos de request/response especificados\n")
+	prd.WriteString("- Tratamento de erros documentado\n\n")
 
-	prd.WriteString("### US002 - As a Team Lead\n")
-	prd.WriteString("**I want** to track project changes easily **so that** I can manage releases effectively.\n\n")
-	prd.WriteString("**Acceptance Criteria:**\n")
-	prd.WriteString("- [ ] Version documentation is maintained\n")
-	prd.WriteString("- [ ] Change history is tracked\n")
-	prd.WriteString("- [ ] Release notes are generated\n\n")
+	prd.WriteString("### RF002 - Gerenciamento de Versão\n")
+	prd.WriteString("**Descrição:** Rastrear e documentar versões do projeto\n")
+	prd.WriteString("**Prioridade:** Média\n")
+	prd.WriteString("**Critérios de Aceite:**\n")
+	prd.WriteString("- Números de versão seguem versionamento semântico\n")
+	prd.WriteString("- Logs de alterações mantidos\n")
+	prd.WriteString("- Documentação de lançamento gerada\n\n")
 
-	// Functional Requirements
-	prd.WriteString("## Functional Requirements\n\n")
-	prd.WriteString("### FR001 - API Documentation\n")
-	prd.WriteString("**Description:** Complete documentation of all API endpoints\n")
-	prd.WriteString("**Priority:** High\n")
-	prd.WriteString("**Acceptance Criteria:**\n")
-	prd.WriteString("- All endpoints documented with examples\n")
-	prd.WriteString("- Request/response formats specified\n")
-	prd.WriteString("- Error handling documented\n\n")
+	// Requisitos Não Funcionais
+	prd.WriteString("## Requisitos Não Funcionais\n\n")
+	prd.WriteString("### RNF001 - Performance\n")
+	prd.WriteString("**Descrição:** Tempo de resposta aceitável para documentação\n")
+	prd.WriteString("**Prioridade:** Média\n")
+	prd.WriteString("**Critérios de Aceite:**\n")
+	prd.WriteString("- Documentação gerada em menos de 30 segundos\n")
+	prd.WriteString("- Formatos legíveis e bem estruturados\n\n")
 
-	prd.WriteString("### FR002 - Version Management\n")
-	prd.WriteString("**Description:** Track and document project versions\n")
-	prd.WriteString("**Priority:** Medium\n")
-	prd.WriteString("**Acceptance Criteria:**\n")
-	prd.WriteString("- Version numbers follow semantic versioning\n")
-	prd.WriteString("- Change logs are maintained\n")
-	prd.WriteString("- Release documentation is generated\n\n")
+	// Considerações Técnicas
+	prd.WriteString("## Considerações Técnicas\n\n")
+	prd.WriteString("### Arquitetura\n")
+	prd.WriteString("A solução segue padrões estabelecidos:\n")
+	prd.WriteString("- Princípios de design de API RESTful\n")
+	prd.WriteString("- Arquitetura modular\n")
+	prd.WriteString("- Separação de responsabilidades\n\n")
 
-	// Technical Considerations
-	prd.WriteString("## Technical Considerations\n\n")
-	prd.WriteString("### Architecture\n")
-	prd.WriteString("The solution follows established patterns:\n")
-	prd.WriteString("- RESTful API design principles\n")
-	prd.WriteString("- Modular architecture\n")
-	prd.WriteString("- Separation of concerns\n\n")
-
-	prd.WriteString("### Technologies\n")
+	prd.WriteString("### Tecnologias\n")
 	for _, tech := range context.Technologies {
-		prd.WriteString(fmt.Sprintf("- **%s**: Primary technology stack component\n", tech))
+		prd.WriteString(fmt.Sprintf("- **%s**: Componente principal da stack tecnológica\n", tech))
 	}
 	prd.WriteString("\n")
 
-	// Dependencies
+	// Dependências
 	if len(context.Dependencies) > 0 {
-		prd.WriteString("## Dependencies\n\n")
+		prd.WriteString("## Dependências\n\n")
 		for _, dep := range context.Dependencies {
 			prd.WriteString(fmt.Sprintf("- %s\n", dep))
 		}
 		prd.WriteString("\n")
 	}
 
-	// Success Metrics
-	prd.WriteString("## Success Metrics\n\n")
-	prd.WriteString("1. **Documentation Coverage**: 100% of endpoints documented\n")
-	prd.WriteString("2. **Developer Onboarding Time**: Reduced by 50%\n")
-	prd.WriteString("3. **Code Quality**: Improved maintainability scores\n")
-	prd.WriteString("4. **Release Efficiency**: Streamlined deployment process\n\n")
+	// Riscos e Mitigações
+	prd.WriteString("## Riscos e Mitigações\n\n")
+	prd.WriteString("### Risco 1 - Complexidade Técnica\n")
+	prd.WriteString("**Descrição:** Dificuldade em manter documentação sincronizada\n")
+	prd.WriteString("**Mitigação:** Automação de geração de documentação\n\n")
 
-	// Out of Scope
-	prd.WriteString("## Out of Scope\n\n")
-	prd.WriteString("- Complete system redesign\n")
-	prd.WriteString("- Database schema changes\n")
-	prd.WriteString("- Third-party integrations\n")
-	prd.WriteString("- Performance optimization\n\n")
-
-	// Timeline
-	prd.WriteString("## Timeline & Milestones\n\n")
-	prd.WriteString("### Phase 1 (Week 1-2)\n")
-	prd.WriteString("- Documentation analysis and planning\n")
-	prd.WriteString("- Template development\n\n")
-
-	prd.WriteString("### Phase 2 (Week 3-4)\n")
-	prd.WriteString("- Documentation generation\n")
-	prd.WriteString("- Review and refinement\n\n")
-
-	prd.WriteString("### Phase 3 (Week 5-6)\n")
-	prd.WriteString("- Final validation\n")
-	prd.WriteString("- Release preparation\n\n")
-
-	// Stakeholders
-	prd.WriteString("## Stakeholders\n\n")
-	prd.WriteString("- **Engineering Team**: Implementation and maintenance\n")
-	prd.WriteString("- **Product Team**: Requirements validation\n")
-	prd.WriteString("- **QA Team**: Quality assurance\n")
-	prd.WriteString("- **DevOps Team**: Deployment and monitoring\n\n")
-
-	// Git Context
-	prd.WriteString("## Git Context\n\n")
-	prd.WriteString(fmt.Sprintf("**Current Branch:** %s\n", gitContext.CurrentBranch))
-	prd.WriteString(fmt.Sprintf("**Last Commit:** %s\n", gitContext.LastCommitMsg))
-
-	if len(gitContext.Changes) > 0 {
-		prd.WriteString("**Recent Changes:**\n")
-		for _, change := range gitContext.Changes {
-			prd.WriteString(fmt.Sprintf("- %s\n", change))
-		}
-	}
-	prd.WriteString("\n")
+	prd.WriteString("### Risco 2 - Adoção pela Equipe\n")
+	prd.WriteString("**Descrição:** Resistência em usar novos padrões\n")
+	prd.WriteString("**Mitigação:** Treinamento e documentação clara\n\n")
 
 	return prd.String()
 }
