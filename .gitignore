@@ -40,3 +40,7 @@ tasks/*.md
 *.tmp
 *.temp
 /tmp/
+
+# Exemplos
+examples/
+
